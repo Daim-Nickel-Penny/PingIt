@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, HttpException } from '@nestjs/common';
 import { Site } from 'src/interface/site.interface';
 import { EndPoint } from 'src/interface/endPoint.interface';
 import { SiteList } from 'src/interface/siteList.interface';
@@ -23,22 +23,25 @@ export class SiteService {
 
   async main(): Promise<void> {
     this.sitesData = await this.seed();
+    if (!this.sitesData.listOfSite.length)
+      throw new NotFoundException('No Data');
   }
 
   async findAllSites(): Promise<SiteList> {
     await this.main();
-    if (!this.sitesData.listOfSite.length)
-      throw new NotFoundException('No Data');
-    else return this.sitesData;
+
+    return this.sitesData;
   }
 
   async findSiteById(id: string): Promise<Site> {
     await this.main();
+
     let result: Site[];
 
     result = this.sitesData.listOfSite.filter((site, key) => site.id === id);
 
-    return result[0];
+    if (!result.length) throw new HttpException('No Id', 204);
+    else return result[0];
   }
 
   async findAllEndPointsForSite(id: string): Promise<EndPoint[]> {
