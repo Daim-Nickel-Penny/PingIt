@@ -1,4 +1,5 @@
-export interface EndPoint{
-    id:string,
-    url:string,
+export interface EndPoint {
+  id: number;
+  siteId: number;
+  url: string;
 }

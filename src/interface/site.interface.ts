@@ -1,7 +1,7 @@
-import { EndPoint } from "./endPoint.interface";
+import { EndPoint } from './endPoint.interface';
 
-export interface Site{
-    id:string,
-    name:string,
-    endPointList:EndPoint[]
+export interface Site {
+  id: number;
+  name: string;
+  endPointList: EndPoint[];
 }

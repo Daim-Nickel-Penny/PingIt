@@ -2,6 +2,7 @@ import { Injectable, NotFoundException, HttpException } from '@nestjs/common';
 import { Site } from 'src/interface/site.interface';
 import { EndPoint } from 'src/interface/endPoint.interface';
 import { SiteList } from 'src/interface/siteList.interface';
+import { CreateSiteDto } from 'src/dtos/create-site.dto';
 
 @Injectable()
 export class SiteService {
@@ -10,13 +11,13 @@ export class SiteService {
   seed(): Promise<SiteList> {
     // use this for local seed test only
     let endPointData: EndPoint[] = [
-      { id: 'e1', url: 'www.bdbd.cn/1' },
-      { id: 'e2', url: 'www.bdbd.cn/2' },
+      { id: 1, siteId: 1, url: 'www.bdbd.cn/1' },
+      { id: 2, siteId: 1, url: 'www.bdbd.cn/2' },
     ];
     let siteData1: Site;
     let siteData2: Site;
-    siteData1 = { id: 's1', name: 's1', endPointList: endPointData };
-    siteData2 = { id: 's2', name: 's2', endPointList: endPointData };
+    siteData1 = { id: 1, name: 's1', endPointList: endPointData };
+    siteData2 = { id: 2, name: 's2', endPointList: endPointData };
     let siteData: Site[] = [siteData1, siteData2];
     return Promise.resolve({ listOfSite: siteData });
   }
@@ -33,7 +34,7 @@ export class SiteService {
     return this.sitesData;
   }
 
-  async findSiteById(id: string): Promise<Site> {
+  async findSiteById(id: number): Promise<Site> {
     await this.main();
 
     let result: Site[];
@@ -44,11 +45,21 @@ export class SiteService {
     else return result[0];
   }
 
-  async findAllEndPointsForSite(id: string): Promise<EndPoint[]> {
+  async findAllEndPointsForSite(id: number): Promise<EndPoint[]> {
     await this.main();
 
     const site: Site = await this.findSiteById(id);
 
     return site.endPointList;
+  }
+
+  async addSite(newSite: CreateSiteDto): Promise<CreateSiteDto> {
+    await this.main();
+
+    if (JSON.stringify(newSite) === '{}')
+      throw new HttpException('Request Body Is Empty', 400);
+
+    this.sitesData.listOfSite.push(newSite);
+    return newSite;
   }
 }
