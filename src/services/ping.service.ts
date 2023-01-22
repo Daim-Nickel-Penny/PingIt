@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { EndPoint } from 'src/interface/endPoint.interface';
 import { PingResponse } from 'src/interface/pingResponse.interface';
 import { Site } from 'src/interface/site.interface';
@@ -36,12 +41,17 @@ export class PingService {
   }
   /**Bad Code ends here */
 
-  async pingResponse(siteId: number): Promise<PingResponse> {
+  async pingResponse(siteId: number): Promise<PingResponse[]> {
     await this.main();
     let endPointList: EndPoint[] = [];
+
     this.sitesData.listOfSite.forEach((site) => {
-      endPointList = site.endPointList;
+      if (site.id === siteId) {
+        endPointList = site.endPointList;
+      }
     });
-    return this.checkPingService.getStatus(endPointList);
+
+    if (endPointList.length === 0) throw new BadRequestException();
+    else return this.checkPingService.getStatus(endPointList, siteId);
   }
 }
