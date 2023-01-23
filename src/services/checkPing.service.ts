@@ -1,4 +1,4 @@
-import { NotFoundException } from '@nestjs/common';
+import { Inject, NotFoundException } from '@nestjs/common';
 import { rejects, throws } from 'assert';
 import { get } from 'https';
 import { EndPoint } from 'src/interface/endPoint.interface';
