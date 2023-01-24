@@ -1,0 +1,26 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Site {
+  id           Int        @id @default(autoincrement())
+  name         String
+  endPointList Endpoint[]
+}
+
+model Endpoint {
+  id     Int    @id @default(autoincrement())
+  url    String
+  site   Site   @relation(fields: [siteId], references: [id])
+  siteId Int
+}
+
+model Review {
+  id   Int    @id @default(autoincrement())
+  name String
+}
